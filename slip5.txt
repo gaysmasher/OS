@@ -1,0 +1,45 @@
+Q.1 Consider a system with ‘m’ processes and ‘n’ resource types. Accept number of 
+instances for every resource type. For each process accept the allocation and maximum 
+requirement matrices. Write a program to display the contents of need matrix and to 
+check if the given request of a process can be granted immediately or not
+
+
+( Ha code nahi sangitla hota taripn ya ek slip mdhe ahe ata pn change kara slip ali tr ha nahitr blog vr ahe pn motha a far )
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Q.2 Write an MPI program to find the max number from randomly generated 1000 numbers 
+(stored in array) on a cluster (Hint: Use MPI_Reduce) 
+
+#include<stdio.h>
+#include<mpi.h>
+#include<stdlib.h>
+int main(int args,char** argv){
+	int array[1000] ,global_max=0,local=0,rank,size,chunk;
+	for(int i=0;i<1000;i++){
+		array[i]=rand()%1000;
+	}
+	int local_max=0;
+	MPI_Init(&args,&argv);
+	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+	MPI_Comm_size(MPI_COMM_WORLD,&size);
+	
+	chunk=1000/size;
+	int newArr[chunk];
+	MPI_Scatter(array,chunk,MPI_INT,newArr,chunk,MPI_INT,0,MPI_COMM_WORLD);
+	global_max=newArr[0];
+	
+	for(int i=0;i<chunk;i++){
+		if(newArr[i]>local_max){
+			local_max=newArr[i];
+		}
+		
+	}
+	
+	MPI_Reduce(&local_max,&global_max,1,MPI_INT,MPI_MAX,0,MPI_COMM_WORLD);
+	if(rank==0){
+		printf("the max:%d\n",global_max);
+	}
+	MPI_Finalize();
+	return 0;
+}

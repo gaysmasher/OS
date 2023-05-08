@@ -1,0 +1,196 @@
+Q.1 Write a C program to simulate Banker’s algorithm for the purpose of
+deadlock avoidance.Consider the following snapshot of system, A, B, C and D
+is the resource type.
+a)Calculate and display the content of need matrix?
+b)Is the system in safe state? If display the safe sequence.
+---------------------------------------------------------------------------------------------------
+
+#include<stdio.h>
+#include<stdlib.h>
+int np,nr,i,j,ch;
+int max[10][10],allocation[10][10],need[10][10],available[10];
+void acceptmatrix(int arr[10][10])
+{
+	
+	printf("enter the elements: ");
+	int i,j;
+	for(i=0;i<np;i++)
+	{
+		for(j=0;j<nr;j++)
+		{
+			scanf("%d",&arr[i][j]);
+		}
+	}
+}
+void acceptvector(int arr[])
+{
+	int i;
+	for(i=0;i<nr;i++)
+	{
+		scanf("%d",&arr[i]);
+	}
+		
+}
+void findneed()
+{
+	int i,j;
+	for(i=0;i<np;i++)
+	{
+		for(j=-0;j<nr;j++)
+		{
+			need[i][j]=max[i][j]-allocation[i][j];
+		}
+	}
+	printf("\nNeed Calculated!");
+}
+void displaymatrix()
+{
+	int i,j;
+	printf("\nAllocation\t\tMax\t\tNeed\n");
+	for(i=0;i<np;i++)
+	{
+		for(j=0;j<nr;j++)
+		{
+			printf("%d",allocation[i][j]);
+			//printf("\t");
+		}
+		for(j=0;j<nr;j++)
+		{
+			printf("%d",max[i][j]);
+			//printf("\t");
+		}
+		for(j=0;j<nr;j++)
+		{
+			printf("%d",need[i][j]);
+			//printf("\t");
+		}
+		printf("\n");
+		
+	}
+	printf("Available\n");
+	for(j=0;j<nr;j++)
+		{
+			printf("%d",available[j]);
+			printf("\t");
+		}
+	
+}
+
+int main()
+{
+	
+	printf("\nEnter the number of process");
+	scanf("%d",&np);
+	printf("\nEnter the number of resources:");
+	scanf("%d",&nr);
+	do{
+		printf("\n1.Accept Allocation\n2.Accept Max\n3.calculate need\n4.Accept Available\n5.DISPLAY MATRIX\n");
+		scanf("%d",&ch);
+		switch(ch)
+		{
+			case 1:
+				printf("Give Allocation:\n");
+				acceptmatrix(allocation);
+				break;
+			case 2:
+				acceptmatrix(max);
+				break;
+				
+			case 3:
+				findneed();
+				break;
+			case 4:
+				acceptvector(available);
+				break;
+			case 5:
+				displaymatrix(allocation);
+				break;
+			case 6:
+				printf("\nInvalid choice\n");
+		}
+	}while(ch!=6);
+	return 0;
+}
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+
+Q.2 Write a simulation program for disk scheduling using FCFS algorithm. Accept total 
+number of disk blocks, disk request string, and current head position from the user. 
+Display the list of request in the order in which it is served. Also display the total number 
+of head moments.
+ 56, 59, 40, 19, 91, 161, 151, 39, 185
+ Start Head Position: 48
+---------------------------------------------------------------------------------------------------
+
+
+#include<stdio.h>
+#include<math.h>>
+int front,rear;
+void init()
+{
+	front=rear=-1;
+}
+void display(int *Q)
+{
+	int i;
+	for(i=front;i<=rear;i++)
+		printf("\t%d",Q[i]);
+}
+void enqueu(int *Q,int n,int var)
+{
+	if(rear==n)
+		printf("\nQueue is Full");
+	else
+	{
+		if(front==-1)
+			front++;
+		rear++;
+		Q[rear]=var;
+	}
+}
+int FCFS(int *Q, int n)
+{
+    int j,seek=0,diff;
+    for(j=0;j<n;j++)
+    {
+        diff=abs(Q[j+1]-Q[j]);
+        seek+=diff;
+    printf("Disk head moves from %d to %d with seek %d\n",Q[j],Q[j+1],diff);
+    }
+    return seek;
+}
+int main()
+{
+    int queue[20],n,var,head,i,j,k,seek,max;
+    float avg;
+    init();
+    printf("\nFront=%d\nRear=%d",front,rear);
+    printf("\nEnter the max range of disk\n");
+    scanf("%d",&max);
+    printf("Enter the size of queue request\n");
+    scanf("%d",&n);
+    printf("Enter the initial head position\n");
+    scanf("%d",&head);
+    printf("Enter the queue of disk positions to be read\n");
+    enqueu(queue,n,head);
+    for(i=1;i<=n;i++)
+    {
+        scanf("%d",&var);
+        if(var<0||var>max)
+            printf("\nError..!Given Position is invalid\n");
+        else
+        {
+            enqueu(queue,n,var);
+        }
+    }
+    printf("\nGiven Queue is\n");
+    display(queue);
+    printf("\n\nFCFS Algorithm\n");
+    seek=FCFS(queue,n);
+    printf("Total seek time is %d\n",seek);
+    avg=seek/(float)n;
+    printf("Average seek time is %f\n",avg);
+    return 0;
+}
