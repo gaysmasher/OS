@@ -1,0 +1,298 @@
+Slip7
+-------------------------------------------------------------------------------
+Q.1 Consider the following snapshot of the system.Using Resource –Request algorithm to Check whether 
+the current system is in safe state or not.
+-------------------------------------------------------------------------------------------------
+
+#include<stdio.h>
+#include<stdlib.h>
+int available[20],Need[20][20],MAX[20][20],alloction[20][20],work[20],safe[20],Request[20],finish[20],n,m;
+
+void accept_matrix(int arr[20][20])
+{
+	int i,j;
+	for(i=0;i<n;i++)
+	{
+		for(j=0;j<m;j++)
+		{
+			scanf("%d",&arr[i][j]);
+		}
+	}
+}
+void accept_array(int arr[20],int no)
+{
+	int i;
+	for(i=0;i<no;i++)
+	{
+		
+			scanf("%d",&arr[i]);
+		
+	}
+}
+void display_matrix(int arr[20][20])
+{
+	int i,j;
+	for(i=0;i<n;i++)
+	{
+		for(j=0;j<m;j++)
+		{
+			printf("%d\t", arr[i][j]);
+		}
+		printf("\n");
+	}
+}
+void display_array(int arr[20],int no)
+{
+	int i;
+	for(i=0;i<no;i++)
+	{
+		
+			printf("%d", arr[i]);
+		
+	}
+}
+void find_need()
+{
+	int i,j;
+	for(i=0;i<n;i++)
+	{
+		for(j=0;j<m;j++)
+		{
+			Need[i][j]=MAX[i][j] - alloction[i][j];
+		}
+	}
+}
+int compare_need(int p)
+{
+	int i,j,flag=0;
+	for(j=0;j<m;j++)
+	{
+		if(Need[p][j]>work[j])
+		{
+			flag=1;
+			break;
+		}
+	}
+	if(flag==0)
+	{
+		return p;
+	}
+	return -1;
+}
+void safety_algo()
+{
+	int over=0,i,j,k,pno,l=0,flag;
+	for(i=0;i<m;i++)
+	work[i]=available[i];
+	for(i=0;i<n;i++)
+	finish[i]=0;
+	while(!over)
+	{
+			for(i=0;i<n;i++)
+			{
+				if(finish[i]==0)
+				{
+					flag=0;
+					pno=compare_need(i);
+					if(pno>-1)
+					break;
+				}
+			}
+			if(i==n)
+			{
+				printf("system is not safe\n");
+				exit(1);
+			}
+			if(i<n && pno>=0)
+			{
+				for(k=0;k<m;k++)
+				work[k]+=alloction[pno][k];
+				finish[pno]=1;
+				safe[l++]=pno;
+				if(l>=n)
+				{
+					printf("\nsafe sequence is :\n");
+					for(l=0;l<n;l++)
+					{
+						printf("P%d\t",safe[l]);
+						over=1;
+					}
+				}
+			}
+		}
+}
+
+void bankers_algo(int pno)
+{	
+	int i;
+	for(i=0;i<n;i++)
+	{
+		if(Request[i] > Need[pno][i])
+		{
+			printf("\nError...process exceeds its Max demand\n");
+			return;
+		}
+	}
+	for(i=0;i<n;i++)
+	{
+		if(Request[i] > available[i])
+		{
+			printf("\nProcess must wait! Resources not available\n");
+			return;
+		}
+	}
+	for(i=0;i<n;i++)
+	{
+		available[i]=available[i]-Request[i];
+		available[i]=available[i]+Request[i];
+		Need[pno][i]=Need[pno][i]-Request[i];
+	}
+	safety_algo();
+}	
+
+void main()
+{
+	printf("\nEnter the number of processes :\n");
+	scanf("%d",&n);
+	printf("\nEnter the number of Resources :\n");
+	scanf("%d",&m);
+	int ch;
+	while(ch!=6)
+	{
+		
+		
+		printf("\n1.accept\n2.display\n3.Need\n4.safety sequence\n5.Bankers algorithm\n6.exit\n");
+		scanf("%d", &ch);
+		
+		switch(ch)
+		{
+		
+		case 1:
+			printf("\nenter the number of available :\n");
+			accept_array(available,m);	
+			printf("\nenter the number of allocation :\n");
+			accept_matrix(alloction);	
+			printf("\nenter the number of MAx :\n");
+			accept_matrix(MAX);
+			break;
+		case 2:
+		
+			printf("\nthe number of available :\n");
+			display_array(available,m);
+			printf("\nthe number of allocation :\n");
+			display_matrix(alloction);
+			printf("\nthe number of MAX :\n");
+			display_matrix(MAX);
+			break;
+		case 3:
+			find_need();
+			printf("\nNeed matrix:\n");
+			display_matrix(Need);
+			break;
+		case 4:
+			safety_algo();
+			break;
+		
+		case 5:
+			int a;
+			printf("\nEnter the process number\n");
+			scanf("%d",&a);
+			printf("\nEnter request\n");
+			accept_array(Request,m);
+			bankers_algo(a);
+			break;
+		
+		case 6:
+			printf("exit\n");
+			break;
+		default:
+			printf("invalid choice\n");
+		}
+	}
+}
+
+================================================================================================================
+Q.2 Write a simulation program for disk scheduling using SCAN algorithm. Accept total 
+number of disk blocks, disk request string, and current head position from the user. Display 
+the list of request in the order in which it is served. Also display the total number of head 
+moments.
+82, 170, 43, 140, 24, 16, 190
+ Starting Head Position: 50
+ Direction: Right
+-------------------------------------------------------------------------------------------------------
+
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+    int RQ[100],i,j,n,TotalHeadMoment=0;
+    int initial,size,move,temp, index;
+    printf("Enter total disk size\n");
+    scanf("%d",&size);
+    printf("Enter the number of Requests\n");
+    scanf("%d",&n);
+    printf("Enter the Requests sequence\n");
+    for(i=0;i<n;i++)
+    	scanf("%d",&RQ[i]);
+    printf("Enter initial head position\n");
+    scanf("%d",&initial);
+   printf("Enter the head movement direction for high 1 and for low 0\n");
+    scanf("%d",&move);
+    
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<n-i-1;j++)
+        {
+            if(RQ[j]>RQ[j+1])
+            {
+                temp=RQ[j];
+                RQ[j]=RQ[j+1];
+                RQ[j+1]=temp;
+            }
+        }
+    }
+    for(i=0;i<n;i++)
+    {
+        if(initial<RQ[i])
+        {
+            index=i;
+            break;
+        }
+    }
+    
+    if(move==1)
+    {
+        for(i=index;i<n;i++)
+        {
+          TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+          initial=RQ[i];
+        }
+       
+        TotalHeadMoment=TotalHeadMoment+abs(size-RQ[i-1]-1);
+        initial = size-1;
+        for(i=index-1;i>=0;i--)
+        {
+          TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+          initial=RQ[i];   
+        }
+    }
+    
+    else
+    {
+        for(i=index-1;i>=0;i--)
+        {
+          TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+          initial=RQ[i];
+        }
+        
+        TotalHeadMoment=TotalHeadMoment+abs(RQ[i+1]-0);
+        initial =0;
+        for(i=index;i<n;i++)
+        {
+          TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+          initial=RQ[i];
+        }
+    }
+    printf("Total head movement is %d",TotalHeadMoment);
+    return 0;
+}

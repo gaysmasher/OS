@@ -1,0 +1,157 @@
+Q.1 Write an MPI program to calculate sum of all odd randomly generated 1000 numbers 
+(stored in array) on a cluster
+--------------------------------------------------------------------------------------
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<mpi.h>
+
+int main(int args,char* argv[]){
+	int arr[1000],localOdd=0,globalOdd=0;
+	for(int i=0;i<1000;i++)
+		arr[i]=rand()%1000;
+	for(int i=0;i<1000;i++)
+		printf("%d ",arr[i]);
+	printf("\n");
+	
+	MPI_Init(&args,&argv);
+	int rank,size;
+	MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+	MPI_Comm_size(MPI_COMM_WORLD,&size);
+	
+	int chunk=100/size;
+	int newArr[chunk];
+	
+	MPI_Scatter(arr,chunk,MPI_INT,newArr,chunk,MPI_INT,0,MPI_COMM_WORLD);
+	
+	for(int i=0;i<chunk;i++){
+		if(arr[i]%2==0)
+			localOdd+=arr[i];
+		else
+			continue;
+	}
+	MPI_Reduce(&localOdd,&globalOdd,1,MPI_INT,MPI_SUM,0,MPI_COMM_WORLD);
+	
+	
+	if(rank==0){
+		printf("\nodd sum:%d\n",globalOdd);
+		
+	}
+	
+	MPI_Finalize();
+	return 0;
+}
+
+=======================================================================================================================
+Q.2 Write a C program to simulate Banker’s algorithm for the purpose of deadlock
+avoidance.The following snapshot of system, A, B, C and D are the resource type.
+a)Calculate and display the content of need matrix?
+b)Is the system in safe state? If display the safe sequence.
+------------------------------------------------------------------------------------------------------------------
+
+#include<stdio.h>
+#include<stdlib.h>
+int np,nr,i,j,ch;
+int max[10][10],allocation[10][10],need[10][10],available[10];
+void acceptmatrix(int arr[10][10])
+{
+	
+	printf("enter the elements: ");
+	int i,j;
+	for(i=0;i<np;i++)
+	{
+		for(j=0;j<nr;j++)
+		{
+			scanf("%d",&arr[i][j]);
+		}
+	}
+}
+void acceptvector(int arr[])
+{
+	int i;
+	for(i=0;i<nr;i++)
+	{
+		scanf("%d",&arr[i]);
+	}
+		
+}
+void findneed()
+{
+	int i,j;
+	for(i=0;i<np;i++)
+	{
+		for(j=-0;j<nr;j++)
+		{
+			need[i][j]=max[i][j]-allocation[i][j];
+		}
+	}
+	printf("\nNeed Calculated!");
+}
+void displaymatrix()
+{
+	int i,j;
+	printf("\nAllocation\t\tMax\t\tNeed\n");
+	for(i=0;i<np;i++)
+	{
+		for(j=0;j<nr;j++)
+		{
+			printf("%d",allocation[i][j]);
+			//printf("\t");
+		}
+		for(j=0;j<nr;j++)
+		{
+			printf("%d",max[i][j]);
+			//printf("\t");
+		}
+		for(j=0;j<nr;j++)
+		{
+			printf("%d",need[i][j]);
+			//printf("\t");
+		}
+		printf("\n");
+		
+	}
+	printf("Available\n");
+	for(j=0;j<nr;j++)
+		{
+			printf("%d",available[j]);
+			printf("\t");
+		}
+	
+}
+
+int main()
+{
+	
+	printf("\nEnter the number of process");
+	scanf("%d",&np);
+	printf("\nEnter the number of resources:");
+	scanf("%d",&nr);
+	do{
+		printf("\n1.Accept Allocation\n2.Accept Max\n3.calculate need\n4.Accept Available\n5.DISPLAY MATRIX\n");
+		scanf("%d",&ch);
+		switch(ch)
+		{
+			case 1:
+				printf("Give Allocation:\n");
+				acceptmatrix(allocation);
+				break;
+			case 2:
+				acceptmatrix(max);
+				break;
+				
+			case 3:
+				findneed();
+				break;
+			case 4:
+				acceptvector(available);
+				break;
+			case 5:
+				displaymatrix(allocation);
+				break;
+			case 6:
+				printf("\nInvalid choice\n");
+		}
+	}while(ch!=6);
+	return 0;
+}
