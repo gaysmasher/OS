@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<items>
+ <item>
+    <name>Item 1</name>
+    <type>Electronics</type>
+    <rate>10.99</rate>
+    <quantity>50</quantity>
+ </item>
+ <item>
+    <name>Item 2</name>
+    <type>Books</type>
+    <rate>5.99</rate>
+    <quantity>20</quantity>
+ </item>
+ <item>
+    <name>Item 3</name>
+    <type>Clothing</type>
+    <rate>19.99</rate>
+    <quantity>30</quantity>
+ </item>
+ <item>
+    <name>Item 4</name>
+    <type>Beauty</type>
+    <rate>7.99</rate>
+    <quantity>40</quantity>
+ </item>
+ <item>
+    <name>Item 5</name>
+    <type>Home</type>
+    <rate>24.99</rate>
+    <quantity>10</quantity>
+ </item>
+<items>
