@@ -1,0 +1,36 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<mpi.h>
+int main(int argc,char** argv)
+{
+	int rank,size;
+	MPI_Inut(&agrc, &argv)
+	MPI_Rank(MPI_COMM_WORLD,&rank);
+	MPI_Size(MPI_COMM_WORLD,&size);
+	
+	int n =1000;
+	double sum=0;
+	double avg=0;
+	double global_sum=0;
+	double global_avg=0;
+
+	int *nums=(int*)malloc(n* sizeof(int));
+	
+	srand(time(NULL)+rank);
+	for(i=0;i<n;i++)
+	{
+		nums[i]=nums[i]%100;
+		sum+=nums[i];
+	}
+	
+	MPI_Reduce(&sum,&global_sum,1,MPI_DOUBLE,MPI_sum,0,MPI_COMM_WORLD);
+	
+	global_avg=global_sum/n*size);
+	if(rank==0)
+	{
+		printf("sum %2f, avg %2f",global_sum,global_avg);
+	}
+	MPI_Finalize()
+}
+	
