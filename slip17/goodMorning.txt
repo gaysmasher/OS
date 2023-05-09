@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Student Registration Form</title>
+	<script type="text/javascript">
+		window.onload = function() {
+			alert("Hello Good Morning!");
+		}
+	</script>
+</head>
+<body>
+	<h1>Student Registration Form</h1>
+	<form>
+		Name:
+		<input type="text" id="name" name="name"><br><br>
+		Email:
+		<input type="email" id="email" name="email"><br><br>
+		<input type="submit" value="Submit">
+	</form>
+</body>
+</html>
